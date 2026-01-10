@@ -50,8 +50,7 @@ CREATE TABLE viagens (
         valor_devolucao NUMERIC(14,2),
         valor_outros_gastos NUMERIC(14,2),
 	total_gasto NUMERIC(14,2),
-	mes mes_enum,
-	mes_nome mes_enum,
-	mes_numero NUMERIC
+	mes_ida mes_enum,
+	mes_volta mes_enum
 );
 
