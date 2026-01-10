@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  bi-gov-viagens:
+    build: .
+    container_name: bi_gov_viagens_app
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true

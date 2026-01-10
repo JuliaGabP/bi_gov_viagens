@@ -41,6 +41,13 @@ bd2-gov-viagens-medallion-bi/
   - Tabelas dimensão  
 - Base pronta para consumo em Power BI  
 
+## Como rodar o projeto
+Primeiro na pasta root do projeto podemos rodar o comando:
+docker compose up --build
+
+Depois que o comando terminar podemos rodar o comando abaixo na pasta root do projeto
+jupyter notebook
+
 ## Desenvolvedores
 
 [Davi Gonçalves Akegawa Pierre](https://github.com/DaviPierre)  
