@@ -1,4 +1,4 @@
-CREATE TYPE viagem_urgente_enum AS ENUM (
+CREATE TYPE via_urg_enum AS ENUM (
         'SIM',
         'NÃO'
 );
@@ -16,41 +16,41 @@ CREATE TYPE mes_enum AS ENUM (
     'November',
     'December'
 );
-CREATE TABLE viagens (
-        identificador_processo_viagem TEXT PRIMARY KEY,
+CREATE TABLE viagem (
+        ide_pro_via TEXT PRIMARY KEY,
         
-        numero_proposta_pcdp TEXT,
+        nmr_ppt_pcd TEXT,
         
         situacao TEXT,
         
-        viagem_urgente viagem_urgente_enum,
+        via_urg via_urg_enum,
         
-        justificativa_urgencia_viagem TEXT,
+        jus_urg_via TEXT,
         
-        codigo_orgao_superior INTEGER,
-        nome_orgao_superior TEXT,
+        cod_org_sup INTEGER,
+        nom_org_sup TEXT,
         
-        codigo_orgao_solicitante INTEGER,
-        nome_orgao_solicitante TEXT,
+        cod_org_sol INTEGER,
+        nom_org_sol TEXT,
         
-        cpf_viajante TEXT,
+        cpf_vjt TEXT,
         nome TEXT,
         cargo TEXT,
         funcao TEXT,
         
-        data_inicio DATE,
-        data_fim DATE,
+        dat_ini DATE,
+        dat_fim DATE,
         
         destinos TEXT,
         
         motivo TEXT,
         
-        valor_diarias NUMERIC(14,2),
-        valor_passagens NUMERIC(14,2),
-        valor_devolucao NUMERIC(14,2),
-        valor_outros_gastos NUMERIC(14,2),
-	total_gasto NUMERIC(14,2),
+        val_dia NUMERIC(14,2),
+        val_pas NUMERIC(14,2),
+        val_dev NUMERIC(14,2),
+        val_out_gas NUMERIC(14,2),
+	tot_gas NUMERIC(14,2),
 	mes_ida mes_enum,
-	mes_volta mes_enum
+	mes_vol mes_enum
 );
 
