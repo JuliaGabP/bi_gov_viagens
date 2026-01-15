@@ -43,10 +43,12 @@ bd2-gov-viagens-medallion-bi/
 
 ## Como rodar o projeto
 Primeiro na pasta root do projeto podemos rodar o comando:
+
 docker compose up --build
 
-Depois que o comando terminar podemos rodar o comando abaixo na pasta root do projeto
-jupyter notebook
+Depois que o comando terminar podemos rodar basta acessar o link localhost: 
+
+http://127.0.0.1:8888/tree
 
 ## Desenvolvedores
 
