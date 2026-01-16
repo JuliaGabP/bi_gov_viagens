@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15
+    container_name: bi_gov_viagens_db
+    restart: always
+    environment:
+      - POSTGRES_USER=bi_bancos2
+      - POSTGRES_PASSWORD=1q2w3e
+      - POSTGRES_DB=viagens_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./juliagabp/bi_gov_viagens/bi_gov_viagens-cf50a8c48ddf29eb057c3db42f194307b22e8d62/Data Layer/gold/base_dados.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
   bi-gov-viagens:
     build: .
     container_name: bi_gov_viagens_app
@@ -10,5 +24,11 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://usuario:senha@db:5432/viagens_db
+    depends_on:
+      - db
     stdin_open: true
     tty: true
+
+volumes:
+  postgres_data:

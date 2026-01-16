@@ -1,0 +1,7 @@
+pandas
+matplotlib
+seaborn
+notebook
+ipykernel
+sqlalchemy
+psycopg2-binary
