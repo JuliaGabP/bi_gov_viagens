@@ -5,3 +5,13 @@ notebook
 ipykernel
 sqlalchemy
 psycopg2-binary
+unicodedata
+re
+hashlib
+sqlalchemy
+os
+time
+csv
+io
+numpy
+jupyter
