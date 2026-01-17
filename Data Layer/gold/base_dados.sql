@@ -46,7 +46,7 @@ CREATE TABLE dim_motivo (
 );
 
 CREATE TABLE fat_viagem (
-    fat_viagem_id CHAR(64) PRIMARY KEY,
+    fat_viagem_id BIGINT PRIMARY KEY,
 
     tempo_id BIGINT NOT NULL,
     orgao_superior_id BIGINT NOT NULL,
