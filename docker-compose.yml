@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./juliagabp/bi_gov_viagens/bi_gov_viagens-cf50a8c48ddf29eb057c3db42f194307b22e8d62/Data Layer/gold/base_dados.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./Data Layer/gold/base_dados.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
 
   bi-gov-viagens:
@@ -24,7 +24,7 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=postgresql://usuario:senha@db:5432/viagens_db
+      - DATABASE_URL=postgresql://bi_bancos2:1q2w3e@db:5432/viagens_db
     depends_on:
       - db
     stdin_open: true

@@ -2,7 +2,7 @@ CREATE SCHEMA IF NOT EXISTS gold;
 SET search_path TO gold;
 
 CREATE TABLE dim_tempo (
-    tempo_id SERIAL PRIMARY KEY,
+    tempo_id BIGINT PRIMARY KEY,
     data_inicio DATE NOT NULL,
     ano INTEGER NOT NULL,
     mes_numero INTEGER NOT NULL CHECK (mes_numero BETWEEN 1 AND 12),
@@ -12,14 +12,14 @@ CREATE TABLE dim_tempo (
 );
 
 CREATE TABLE dim_orgao_superior (
-    orgao_superior_id SERIAL PRIMARY KEY, 
+    orgao_superior_id BIGINT PRIMARY KEY, 
     codigo_orgao_superior INTEGER NOT NULL,
     nome_orgao_superior TEXT NOT NULL,
     UNIQUE (codigo_orgao_superior)
 );
 
 CREATE TABLE dim_orgao_solicitante (
-    orgao_solicitante_id SERIAL PRIMARY KEY,
+    orgao_solicitante_id BIGINT PRIMARY KEY,
     codigo_orgao_solicitante INTEGER NOT NULL,
     nome_orgao_solicitante TEXT NOT NULL,
     codigo_orgao_superior INTEGER NOT NULL,
@@ -32,16 +32,15 @@ CREATE TABLE dim_orgao_solicitante (
 );
 
 CREATE TABLE dim_viajante (
-    viajante_id SERIAL PRIMARY KEY,
+    viajante_id BIGINT PRIMARY KEY,
     cpf_viajante TEXT NOT NULL,
     nome TEXT NOT NULL,
     cargo TEXT,
-    descricao_funcao TEXT,
-    UNIQUE (cpf_viajante)
+    descricao_funcao TEXT
 );
 
 CREATE TABLE dim_motivo (
-    motivo_id SERIAL PRIMARY KEY,
+    motivo_id BIGINT PRIMARY KEY,
     motivo TEXT NOT NULL,
     UNIQUE (motivo)
 );
@@ -49,11 +48,11 @@ CREATE TABLE dim_motivo (
 CREATE TABLE fat_viagem (
     fat_viagem_id CHAR(64) PRIMARY KEY,
 
-    tempo_id INTEGER NOT NULL,
-    orgao_superior_id INTEGER NOT NULL,
-    orgao_solicitante_id INTEGER NOT NULL,
-    viajante_id INTEGER NOT NULL,
-    motivo_id INTEGER,
+    tempo_id BIGINT NOT NULL,
+    orgao_superior_id BIGINT NOT NULL,
+    orgao_solicitante_id BIGINT NOT NULL,
+    viajante_id BIGINT NOT NULL,
+    motivo_id BIGINT,
 
     valor_diarias NUMERIC(14,2) NOT NULL DEFAULT 0,
     valor_passagens NUMERIC(14,2) NOT NULL DEFAULT 0,
@@ -90,4 +89,3 @@ CREATE INDEX idx_vgm_osp ON fat_viagem (orgao_superior_id);
 CREATE INDEX idx_vgm_osg ON fat_viagem (orgao_solicitante_id);
 CREATE INDEX idx_vgm_vjt ON fat_viagem (viajante_id);
 CREATE INDEX idx_vgm_mot ON fat_viagem (motivo_id);
-
