@@ -78,23 +78,42 @@ GROUP BY t.mes_nome, t.mes_numero
 ORDER BY total_viagens DESC;
 
 -- 9. Gastos totais detalhados por função de viajante
-SELECT 
-    vj.descricao_funcao, 
-    COUNT(fv.fat_viagem_id) AS num_viagens,
-    SUM(fv.total_gasto) AS gasto_total
-FROM gold.fat_viagem fv
-JOIN gold.dim_viajante vj ON fv.viajante_id = vj.viajante_id
-WHERE vj.descricao_funcao IS NOT NULL
-GROUP BY vj.descricao_funcao
+WITH indicadores_por_funcao AS (
+    SELECT
+        vj.descricao_funcao,
+        COUNT(fv.fat_viagem_id) AS quantidade_viagens,
+        SUM(fv.total_gasto) AS gasto_total,
+        AVG(fv.total_gasto) AS gasto_medio_por_viagem
+    FROM gold.fat_viagem fv
+    JOIN gold.dim_viajante vj
+        ON fv.viajante_id = vj.viajante_id
+    WHERE vj.descricao_funcao IS NOT NULL
+    GROUP BY vj.descricao_funcao
+)
+SELECT
+    descricao_funcao,
+    quantidade_viagens,
+    gasto_total,
+    ROUND(gasto_medio_por_viagem, 2) AS gasto_medio_por_viagem
+FROM indicadores_por_funcao
 ORDER BY gasto_total DESC;
 
 -- 10. Cruzamento de Órgão Superior vs Motivo (Onde se gasta mais e por quê)
-SELECT 
-    os.nome_orgao_superior, 
-    m.motivo, 
-    SUM(fv.total_gasto) AS total_gasto
-FROM gold.fat_viagem fv
-JOIN gold.dim_orgao_superior os ON fv.orgao_superior_id = os.orgao_superior_id
-JOIN gold.dim_motivo m ON fv.motivo_id = m.motivo_id
-GROUP BY os.nome_orgao_superior, m.motivo
-ORDER BY os.nome_orgao_superior, total_gasto DESC;
+WITH indicadores_por_orgao_solicitante AS (
+    SELECT
+        os.nome_orgao_solicitante,
+        COUNT(fv.fat_viagem_id) AS quantidade_viagens,
+        SUM(fv.total_gasto) AS gasto_total,
+        AVG(fv.total_gasto) AS gasto_medio_por_viagem
+    FROM gold.fat_viagem fv
+    JOIN gold.dim_orgao_solicitante os
+        ON fv.orgao_solicitante_id = os.orgao_solicitante_id
+    GROUP BY os.nome_orgao_solicitante
+)
+SELECT
+    nome_orgao_solicitante,
+    quantidade_viagens,
+    gasto_total,
+    ROUND(gasto_medio_por_viagem, 2) AS gasto_medio_por_viagem
+FROM indicadores_por_orgao_solicitante
+ORDER BY gasto_total DESC;
