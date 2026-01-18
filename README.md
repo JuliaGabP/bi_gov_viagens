@@ -50,6 +50,12 @@ Depois que o comando terminar podemos rodar basta acessar o link localhost:
 
 http://127.0.0.1:8888/tree
 
+## Dados Power BI
+
+Os resultados das consultas feitas em SQL podem ser visualizadas no Power BI, por meio de tabelas e gráficos interativos.  
+Segue o exemplo abaixo.
+![Imagem exemplo do BI](https://github.com/JuliaGabP/bi_gov_viagens/blob/main/Data%20Layer/imagembi.png)
+
 ## Desenvolvedores
 
 [Davi Gonçalves Akegawa Pierre](https://github.com/DaviPierre)  
