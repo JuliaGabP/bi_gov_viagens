@@ -3,3 +3,5 @@
 anotacoes/
 downloads/
 .Trash-*/
+Data Layer/
+*.csv
