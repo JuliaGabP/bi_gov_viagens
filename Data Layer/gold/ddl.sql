@@ -7,7 +7,7 @@ CREATE TABLE dim_tmp (
     ano INTEGER NOT NULL,
     mes_num INTEGER NOT NULL CHECK (mes_num BETWEEN 1 AND 12),
     mes_nom TEXT NOT NULL,
-    dia_semana_nom TEXT NOT NULL,
+    dia_smn_nom TEXT NOT NULL,
     UNIQUE (dat_ini)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE fat_vgm (
     vlr_psg NUMERIC(18,2) NOT NULL DEFAULT 0,
     vlr_out NUMERIC(18,2) NOT NULL DEFAULT 0,
     vlr_dvl NUMERIC(18,2) NOT NULL DEFAULT 0,
-    ttl_gasto NUMERIC(18,2) NOT NULL,
+    ttl_gst NUMERIC(18,2) NOT NULL,
 
     drc_vgm_dia INTEGER NOT NULL,
     cst_med_dia NUMERIC(18,2) NOT NULL,
