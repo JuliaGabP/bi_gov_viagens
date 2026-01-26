@@ -4,6 +4,7 @@ SET search_path TO dw_gold;
 CREATE TABLE dim_tmp (
     srk_tmp BIGINT PRIMARY KEY,
     dat_ini DATE NOT NULL,
+    dat_fim DATE NOT NULL,
     ano INTEGER NOT NULL,
     mes_num INTEGER NOT NULL CHECK (mes_num BETWEEN 1 AND 12),
     mes_nom TEXT NOT NULL,
