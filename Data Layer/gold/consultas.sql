@@ -1,119 +1,119 @@
--- 1. Total gasto por Órgão Superior (Ranking de gastos)
-SELECT 
-    os.nome_orgao_superior, 
-    SUM(fv.total_gasto) AS gasto_total
-FROM gold.fat_viagem fv
-JOIN gold.dim_orgao_superior os ON fv.orgao_superior_id = os.orgao_superior_id
-GROUP BY os.nome_orgao_superior
-ORDER BY gasto_total DESC;
+-- 1. Top 10 viagens mais caras
+SELECT
+    fv.id_fat_vgm,
+    vjt.nom_vjt,
+    orgs.nom_org_sol,
+    tmp.ano,
+    fv.ttl_gst
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_vjt vjt      ON fv.srk_vjt = vjt.srk_vjt
+JOIN dw_gold.dim_org_sol orgs ON fv.srk_org_sol = orgs.srk_org_sol
+JOIN dw_gold.dim_tmp tmp      ON fv.srk_tmp = tmp.srk_tmp
+ORDER BY fv.ttl_gst DESC
+LIMIT 10;
 
--- 2. Os 5 viajantes que mais geraram custos
-SELECT 
-    vj.nome, 
-    SUM(fv.total_gasto) AS total_gasto_acumulado,
-    COUNT(fv.fat_viagem_id) AS quantidade_viagens
-FROM gold.fat_viagem fv
-JOIN gold.dim_viajante vj ON fv.viajante_id = vj.viajante_id
-GROUP BY vj.nome
-ORDER BY total_gasto_acumulado DESC
+
+-- 2. Top 5 viajantes com mais viagens
+SELECT
+    vjt.nom_vjt,
+    COUNT(fv.id_fat_vgm) AS qtd_vgm
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_vjt vjt ON fv.srk_vjt = vjt.srk_vjt
+GROUP BY vjt.nom_vjt
+ORDER BY qtd_vgm DESC
 LIMIT 5;
 
--- 3. Média de custo diário por motivo de viagem
-SELECT 
-    m.motivo, 
-    ROUND(AVG(fv.custo_medio_diario), 2) AS media_custo_diario
-FROM gold.fat_viagem fv
-JOIN gold.dim_motivo m ON fv.motivo_id = m.motivo_id
-GROUP BY m.motivo
-ORDER BY media_custo_diario DESC;
 
--- 4. Evolução mensal dos gastos com passagens e diárias
-SELECT 
-    t.ano, 
-    t.mes_nome, 
-    SUM(fv.valor_passagens) AS total_passagens, 
-    SUM(fv.valor_diarias) AS total_diarias
-FROM gold.fat_viagem fv
-JOIN gold.dim_tempo t ON fv.tempo_id = t.tempo_id
-GROUP BY t.ano, t.mes_numero, t.mes_nome
-ORDER BY t.ano, t.mes_numero;
+-- 3. Top 10 viajantes por gasto total
+SELECT
+    vjt.nom_vjt,
+    SUM(fv.ttl_gst) AS ttl_gst_vjt
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_vjt vjt ON fv.srk_vjt = vjt.srk_vjt
+GROUP BY vjt.nom_vjt
+ORDER BY ttl_gst_vjt DESC
+LIMIT 10;
 
--- 5. Órgãos solicitantes com maior valor de devolução
-SELECT 
-    osg.nome_orgao_solicitante, 
-    SUM(fv.valor_devolucao) AS total_devolvido
-FROM gold.fat_viagem fv
-JOIN gold.dim_orgao_solicitante osg ON fv.orgao_solicitante_id = osg.orgao_solicitante_id
-GROUP BY osg.nome_orgao_solicitante
-ORDER BY total_devolvido DESC;
+-- 4. Gasto total por orgão superior
+SELECT
+    orgsup.nom_org_sup,
+    SUM(fv.ttl_gst) AS ttl_gst_org_sup
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_org_sup orgsup ON fv.srk_org_sup = orgsup.srk_org_sup
+GROUP BY orgsup.nom_org_sup
+ORDER BY ttl_gst_org_sup DESC;
 
--- 6. Duração média das viagens por cargo
-SELECT 
-    vj.cargo, 
-    ROUND(AVG(fv.duracao_viagem_dias), 1) AS media_dias_viagem
-FROM gold.fat_viagem fv
-JOIN gold.dim_viajante vj ON fv.viajante_id = vj.viajante_id
-WHERE vj.cargo IS NOT NULL
-GROUP BY vj.cargo
-ORDER BY media_dias_viagem DESC;
+-- 5. Quantidade de viagens por orgão solicitante
+SELECT
+    orgs.nom_org_sol,
+    COUNT(fv.id_fat_vgm) AS qtd_vgm
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_org_sol orgs ON fv.srk_org_sol = orgs.srk_org_sol
+GROUP BY orgs.nom_org_sol
+ORDER BY qtd_vgm DESC;
 
--- 7. Percentual de gastos extras (outros gastos) em relação ao total
-SELECT 
-    os.nome_orgao_superior,
-    SUM(fv.valor_outros_gastos) AS outros_gastos,
-    SUM(fv.total_gasto) AS total,
-    ROUND((SUM(fv.valor_outros_gastos) / NULLIF(SUM(fv.total_gasto), 0)) * 100, 2) AS percentual_extra
-FROM gold.fat_viagem fv
-JOIN gold.dim_orgao_superior os ON fv.orgao_superior_id = os.orgao_superior_id
-GROUP BY os.nome_orgao_superior
-ORDER BY percentual_extra DESC;
+-- 6. Gasto total por ano
+SELECT
+    tmp.ano,
+    SUM(fv.ttl_gst) AS ttl_gst_ano
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_tmp tmp ON fv.srk_tmp = tmp.srk_tmp
+GROUP BY tmp.ano
+ORDER BY tmp.ano;
 
--- 8. Identificação de meses com maior volume de viagens
-SELECT 
-    t.mes_nome, 
-    COUNT(fv.fat_viagem_id) AS total_viagens
-FROM gold.fat_viagem fv
-JOIN gold.dim_tempo t ON fv.tempo_id = t.tempo_id
-GROUP BY t.mes_nome, t.mes_numero
-ORDER BY total_viagens DESC;
 
--- 9. Gastos totais detalhados por função de viajante
-WITH indicadores_por_funcao AS (
+-- 7. Gasto médio por viagem por orgão superior
+SELECT
+    orgsup.nom_org_sup,
+    ROUND(AVG(fv.ttl_gst), 2) AS gst_med_vgm
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_org_sup orgsup ON fv.srk_org_sup = orgsup.srk_org_sup
+GROUP BY orgsup.nom_org_sup
+ORDER BY gst_med_vgm DESC;
+
+
+-- 8. Total devolvido por orgão superior
+SELECT
+    orgsup.nom_org_sup,
+    SUM(fv.vlr_dvl) AS ttl_dvl
+FROM dw_gold.fat_vgm fv
+JOIN dw_gold.dim_org_sup orgsup ON fv.srk_org_sup = orgsup.srk_org_sup
+GROUP BY orgsup.nom_org_sup
+ORDER BY ttl_dvl DESC;
+
+
+-- 9. Orgãos superiores com maior custo médio diário
+WITH cte_cst_dia AS (
     SELECT
-        vj.descricao_funcao,
-        COUNT(fv.fat_viagem_id) AS quantidade_viagens,
-        SUM(fv.total_gasto) AS gasto_total,
-        AVG(fv.total_gasto) AS gasto_medio_por_viagem
-    FROM gold.fat_viagem fv
-    JOIN gold.dim_viajante vj
-        ON fv.viajante_id = vj.viajante_id
-    WHERE vj.descricao_funcao IS NOT NULL
-    GROUP BY vj.descricao_funcao
+        srk_org_sup,
+        cst_med_dia
+    FROM dw_gold.fat_vgm
+    WHERE cst_med_dia > 0
 )
 SELECT
-    descricao_funcao,
-    quantidade_viagens,
-    gasto_total,
-    ROUND(gasto_medio_por_viagem, 2) AS gasto_medio_por_viagem
-FROM indicadores_por_funcao
-ORDER BY gasto_total DESC;
+    orgsup.nom_org_sup,
+    ROUND(AVG(cte.cst_med_dia), 2) AS med_cst_dia
+FROM cte_cst_dia cte
+JOIN dw_gold.dim_org_sup orgsup
+    ON cte.srk_org_sup = orgsup.srk_org_sup
+GROUP BY orgsup.nom_org_sup
+ORDER BY med_cst_dia DESC;
 
--- 10. Cruzamento de Órgão Superior vs Motivo (Onde se gasta mais e por quê)
-WITH indicadores_por_orgao_solicitante AS (
+-- 10.Relação entre duração da viagem e custo médio diário por órgão superior
+WITH cte_vgm_org AS (
     SELECT
-        os.nome_orgao_solicitante,
-        COUNT(fv.fat_viagem_id) AS quantidade_viagens,
-        SUM(fv.total_gasto) AS gasto_total,
-        AVG(fv.total_gasto) AS gasto_medio_por_viagem
-    FROM gold.fat_viagem fv
-    JOIN gold.dim_orgao_solicitante os
-        ON fv.orgao_solicitante_id = os.orgao_solicitante_id
-    GROUP BY os.nome_orgao_solicitante
+        fv.srk_org_sup,
+        fv.drc_vgm_dia,
+        fv.cst_med_dia
+    FROM dw_gold.fat_vgm fv
+    WHERE fv.drc_vgm_dia > 0
 )
 SELECT
-    nome_orgao_solicitante,
-    quantidade_viagens,
-    gasto_total,
-    ROUND(gasto_medio_por_viagem, 2) AS gasto_medio_por_viagem
-FROM indicadores_por_orgao_solicitante
-ORDER BY gasto_total DESC;
+    orgsup.nom_org_sup,
+    ROUND(AVG(cte.drc_vgm_dia), 1) AS dur_med_vgm_dia,
+    ROUND(AVG(cte.cst_med_dia), 2) AS cst_med_dia
+FROM cte_vgm_org cte
+JOIN dw_gold.dim_org_sup orgsup
+    ON cte.srk_org_sup = orgsup.srk_org_sup
+GROUP BY orgsup.nom_org_sup
+ORDER BY cst_med_dia DESC;
