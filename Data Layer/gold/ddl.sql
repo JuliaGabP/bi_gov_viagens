@@ -43,24 +43,20 @@ CREATE TABLE dim_vjt (
 CREATE TABLE dim_mtv (
     srk_mtv BIGINT PRIMARY KEY,
     mtv TEXT NOT NULL,
-    UNIQUE (nom_mtv)
 );
 
 CREATE TABLE fat_vgm (
-    srk_fat_vgm BIGINT PRIMARY KEY,
-
+    id_fat_vgm BIGINT PRIMARY KEY,
     srk_tmp BIGINT NOT NULL,
     srk_org_sup BIGINT NOT NULL,
     srk_org_sol BIGINT NOT NULL,
     srk_vjt BIGINT NOT NULL,
     srk_mtv BIGINT,
-
     vlr_dia NUMERIC(18,2) NOT NULL DEFAULT 0,
     vlr_psg NUMERIC(18,2) NOT NULL DEFAULT 0,
     vlr_out NUMERIC(18,2) NOT NULL DEFAULT 0,
     vlr_dvl NUMERIC(18,2) NOT NULL DEFAULT 0,
     ttl_gst NUMERIC(18,2) NOT NULL,
-
     drc_vgm_dia INTEGER NOT NULL,
     cst_med_dia NUMERIC(18,2) NOT NULL,
 
