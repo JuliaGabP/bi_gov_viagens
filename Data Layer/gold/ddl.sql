@@ -2,9 +2,8 @@ CREATE SCHEMA IF NOT EXISTS dw_gold;
 SET search_path TO dw_gold;
 
 CREATE TABLE dim_tmp (
-    srk_tmp BIGINT PRIMARY KEY,
+    tmp_srk BIGINT PRIMARY KEY,
     dat_ini DATE NOT NULL,
-    dat_fim DATE NOT NULL,
     ano INTEGER NOT NULL,
     mes_num INTEGER NOT NULL CHECK (mes_num BETWEEN 1 AND 12),
     mes_nom TEXT NOT NULL,
@@ -13,77 +12,80 @@ CREATE TABLE dim_tmp (
 );
 
 CREATE TABLE dim_org_sup (
-    srk_org_sup BIGINT PRIMARY KEY,
+    org_sup_srk BIGINT PRIMARY KEY, 
     cod_org_sup INTEGER NOT NULL,
     nom_org_sup TEXT NOT NULL,
     UNIQUE (cod_org_sup)
 );
 
 CREATE TABLE dim_org_sol (
-    srk_org_sol BIGINT PRIMARY KEY,
+    org_sol_srk BIGINT PRIMARY KEY,
     cod_org_sol INTEGER NOT NULL,
     nom_org_sol TEXT NOT NULL,
-    srk_org_sup BIGINT NOT NULL,
+    cod_org_sup INTEGER NOT NULL,
 
-    CONSTRAINT fk_org_sol_org_sup
-        FOREIGN KEY (srk_org_sup)
-        REFERENCES dim_org_sup (srk_org_sup),
+    CONSTRAINT fk_osg_osp
+        FOREIGN KEY (cod_org_sup)
+        REFERENCES dim_org_sup (cod_org_sup),
 
     UNIQUE (cod_org_sol)
 );
 
 CREATE TABLE dim_vjt (
-    srk_vjt BIGINT PRIMARY KEY,
+    vjt_srk BIGINT PRIMARY KEY,
     cpf_vjt TEXT NOT NULL,
-    nom_vjt TEXT NOT NULL,
-    crg TEXT,
-    dsc_fnc TEXT,
-    UNIQUE (cpf_vjt)
+    nom TEXT NOT NULL,
+    cargo TEXT,
+    descricao_funcao TEXT
 );
 
 CREATE TABLE dim_mtv (
-    srk_mtv BIGINT PRIMARY KEY,
+    mtv_srk BIGINT PRIMARY KEY,
     mtv TEXT NOT NULL,
+    UNIQUE (mtv)
 );
 
 CREATE TABLE fat_vgm (
-    id_fat_vgm BIGINT PRIMARY KEY,
-    srk_tmp BIGINT NOT NULL,
-    srk_org_sup BIGINT NOT NULL,
-    srk_org_sol BIGINT NOT NULL,
-    srk_vjt BIGINT NOT NULL,
-    srk_mtv BIGINT,
-    vlr_dia NUMERIC(18,2) NOT NULL DEFAULT 0,
-    vlr_psg NUMERIC(18,2) NOT NULL DEFAULT 0,
-    vlr_out NUMERIC(18,2) NOT NULL DEFAULT 0,
-    vlr_dvl NUMERIC(18,2) NOT NULL DEFAULT 0,
-    ttl_gst NUMERIC(18,2) NOT NULL,
+    fat_vgm_srk BIGINT PRIMARY KEY,
+
+    tmp_srk BIGINT NOT NULL,
+    org_sup_srk BIGINT NOT NULL,
+    org_sol_srk BIGINT NOT NULL,
+    vjt_srk BIGINT NOT NULL,
+    mtv_srk BIGINT,
+
+    vlr_dia NUMERIC(14,2) NOT NULL DEFAULT 0,
+    vlr_psg NUMERIC(14,2) NOT NULL DEFAULT 0,
+    vlr_out NUMERIC(14,2) NOT NULL DEFAULT 0,
+    vlr_dvl NUMERIC(14,2) NOT NULL DEFAULT 0,
+    tot_gst NUMERIC(14,2) NOT NULL,
+
     drc_vgm_dia INTEGER NOT NULL,
-    cst_med_dia NUMERIC(18,2) NOT NULL,
+    cst_med_dia NUMERIC(14,2) NOT NULL,
 
     CONSTRAINT fk_vgm_tmp
-        FOREIGN KEY (srk_tmp)
-        REFERENCES dim_tmp (srk_tmp),
+        FOREIGN KEY (tmp_srk)
+        REFERENCES dim_tmp (tmp_srk),
 
-    CONSTRAINT fk_vgm_org_sup
-        FOREIGN KEY (srk_org_sup)
-        REFERENCES dim_org_sup (srk_org_sup),
+    CONSTRAINT fk_vgm_osp
+        FOREIGN KEY (org_sup_srk)
+        REFERENCES dim_org_sup (org_sup_srk),
 
-    CONSTRAINT fk_vgm_org_sol
-        FOREIGN KEY (srk_org_sol)
-        REFERENCES dim_org_sol (srk_org_sol),
+    CONSTRAINT fk_vgm_osg
+        FOREIGN KEY (org_sol_srk)
+        REFERENCES dim_org_sol (org_sol_srk),
 
     CONSTRAINT fk_vgm_vjt
-        FOREIGN KEY (srk_vjt)
-        REFERENCES dim_vjt (srk_vjt),
+        FOREIGN KEY (vjt_srk)
+        REFERENCES dim_vjt (vjt_srk),
 
     CONSTRAINT fk_vgm_mtv
-        FOREIGN KEY (srk_mtv)
-        REFERENCES dim_mtv (srk_mtv)
+        FOREIGN KEY (mtv_srk)
+        REFERENCES dim_mtv (mtv_srk)
 );
 
-CREATE INDEX idc_fat_vgm_tmp     ON fat_vgm (srk_tmp);
-CREATE INDEX idc_fat_vgm_org_sup ON fat_vgm (srk_org_sup);
-CREATE INDEX idc_fat_vgm_org_sol ON fat_vgm (srk_org_sol);
-CREATE INDEX idc_fat_vgm_vjt     ON fat_vgm (srk_vjt);
-CREATE INDEX idc_fat_vgm_mtv     ON fat_vgm (srk_mtv);
+CREATE INDEX idc_vgm_tmp ON fat_vgm (tmp_srk);
+CREATE INDEX idc_vgm_osp ON fat_vgm (org_sup_srk);
+CREATE INDEX idc_vgm_osg ON fat_vgm (org_sol_srk);
+CREATE INDEX idc_vgm_vjt ON fat_vgm (vjt_srk);
+CREATE INDEX idc_vgm_mtv ON fat_vgm (mtv_srk);
