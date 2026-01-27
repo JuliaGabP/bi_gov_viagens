@@ -5,40 +5,53 @@ services:
     image: postgres:15
     container_name: bi_gov_viagens_db
     restart: always
+
     environment:
       POSTGRES_USER: bi_bancos2
       POSTGRES_PASSWORD: 1q2w3e
       POSTGRES_DB: viagens_db
+
     ports:
       - "5432:5432"
+
     volumes:
       - ./Data Layer/silver/ddl.sql:/docker-entrypoint-initdb.d/01_silver.sql
+      - ./Data Layer/gold/ddl.sql:/docker-entrypoint-initdb.d/02_gold.sql
+
       - postgres_data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: bi_gov_viagens_pgadmin
     restart: always
+
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+
     ports:
       - "5050:80"
+
     depends_on:
       - db
 
   bi-gov-viagens:
     build: .
     container_name: bi_gov_viagens_app
+
     ports:
       - "8888:8888"
+
     volumes:
       - .:/app
+
     environment:
       PYTHONUNBUFFERED: 1
       DATABASE_URL: postgresql://bi_bancos2:1q2w3e@db:5432/viagens_db
+
     depends_on:
       - db
+
     stdin_open: true
     tty: true
 
