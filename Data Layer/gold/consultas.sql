@@ -1,22 +1,21 @@
 -- 1. Top 10 viagens mais caras
 SELECT
-    fv.id_fat_vgm,
+    fv.srk_fat_vgm,
     vjt.nom_vjt,
     orgs.nom_org_sol,
     tmp.ano,
-    fv.ttl_gst
+    fv.tot_gas
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_vjt vjt      ON fv.srk_vjt = vjt.srk_vjt
 JOIN dw_gold.dim_org_sol orgs ON fv.srk_org_sol = orgs.srk_org_sol
 JOIN dw_gold.dim_tmp tmp      ON fv.srk_tmp = tmp.srk_tmp
-ORDER BY fv.ttl_gst DESC
+ORDER BY fv.tot_gas DESC
 LIMIT 10;
-
 
 -- 2. Top 5 viajantes com mais viagens
 SELECT
     vjt.nom_vjt,
-    COUNT(fv.id_fat_vgm) AS qtd_vgm
+    COUNT(fv.srk_fat_vgm) AS qtd_vgm
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_vjt vjt ON fv.srk_vjt = vjt.srk_vjt
 GROUP BY vjt.nom_vjt
@@ -27,26 +26,26 @@ LIMIT 5;
 -- 3. Top 10 viajantes por gasto total
 SELECT
     vjt.nom_vjt,
-    SUM(fv.ttl_gst) AS ttl_gst_vjt
+    SUM(fv.tot_gas) AS tot_gas_vjt
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_vjt vjt ON fv.srk_vjt = vjt.srk_vjt
 GROUP BY vjt.nom_vjt
-ORDER BY ttl_gst_vjt DESC
+ORDER BY tot_gas_vjt DESC
 LIMIT 10;
 
 -- 4. Gasto total por orgão superior
 SELECT
     orgsup.nom_org_sup,
-    SUM(fv.ttl_gst) AS ttl_gst_org_sup
+    SUM(fv.tot_gas) AS tot_gas_org_sup
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_org_sup orgsup ON fv.srk_org_sup = orgsup.srk_org_sup
 GROUP BY orgsup.nom_org_sup
-ORDER BY ttl_gst_org_sup DESC;
+ORDER BY tot_gas_org_sup DESC;
 
 -- 5. Quantidade de viagens por orgão solicitante
 SELECT
     orgs.nom_org_sol,
-    COUNT(fv.id_fat_vgm) AS qtd_vgm
+    COUNT(fv.srk_fat_vgm) AS qtd_vgm
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_org_sol orgs ON fv.srk_org_sol = orgs.srk_org_sol
 GROUP BY orgs.nom_org_sol
@@ -55,22 +54,20 @@ ORDER BY qtd_vgm DESC;
 -- 6. Gasto total por ano
 SELECT
     tmp.ano,
-    SUM(fv.ttl_gst) AS ttl_gst_ano
+    SUM(fv.tot_gas) AS tot_gas_ano
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_tmp tmp ON fv.srk_tmp = tmp.srk_tmp
 GROUP BY tmp.ano
 ORDER BY tmp.ano;
 
-
 -- 7. Gasto médio por viagem por orgão superior
 SELECT
     orgsup.nom_org_sup,
-    ROUND(AVG(fv.ttl_gst), 2) AS gst_med_vgm
+    ROUND(AVG(fv.tot_gas), 2) AS gas_med_vgm
 FROM dw_gold.fat_vgm fv
 JOIN dw_gold.dim_org_sup orgsup ON fv.srk_org_sup = orgsup.srk_org_sup
 GROUP BY orgsup.nom_org_sup
-ORDER BY gst_med_vgm DESC;
-
+ORDER BY gas_med_vgm DESC;
 
 -- 8. Total devolvido por orgão superior
 SELECT
