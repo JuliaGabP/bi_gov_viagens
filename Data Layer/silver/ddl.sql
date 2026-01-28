@@ -18,19 +18,19 @@ CREATE TABLE IF NOT EXISTS viagem (
     cod_org_sol INTEGER,
     nom_org_sol TEXT,
     cpf_vjt TEXT,
-    nome_vjt TEXT,
+    nom_vjt TEXT,
     cargo TEXT,
     funcao TEXT,
     dat_ini DATE,
     dat_fim DATE,
     destinos TEXT,
     motivo TEXT,
-    val_dia NUMERIC(18,2),
-    val_pas NUMERIC(18,2),
-    val_dev NUMERIC(18,2),
-    val_out_gas NUMERIC(18,2),
+    vlr_dia NUMERIC(18,2),
+    vlr_psg NUMERIC(18,2),
+    vlr_dvl NUMERIC(18,2),
+    vlr_out NUMERIC(18,2),
     tot_gas NUMERIC(18,2),
-    mes_ida SMALLINT CHECK (mes_ida BETWEEN 1 AND 12),
-    mes_vol SMALLINT CHECK (mes_vol BETWEEN 1 AND 12)
+    mes_ida TEXT,
+    mes_vol TEXT 
 );
 
