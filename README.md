@@ -14,8 +14,7 @@ bd2-gov-viagens-medallion-bi/
  ├── Data_Layer/
  │   ├── raw/        # Dados originais (Bronze)
  │   ├── silver/     # Dados limpos, tipados e padronizados
- │   ├── gold/       # Dados modelados para BI (modelo dimensional)
- │   └── README.md
+ │   └── gold/       # Dados modelados para BI (modelo dimensional)
  └── Transformer/    # Scripts de ETL e transformações
 ```
 
